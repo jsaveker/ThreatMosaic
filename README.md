@@ -29,8 +29,6 @@ Welcome to the **Threat Detection Graph Application** repository! This applicati
     - [2. Search Nodes](#2-search-nodes)
     - [3. Create Threat Scenario](#3-create-threat-scenario)
 - [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
 - [Additional Documentation](#additional-documentation)
   - [Setting Up the Neo4j Database](#setting-up-the-neo4j-database)
