@@ -86,3 +86,92 @@ Before you begin, ensure you have the following installed on your system:
 git clone https://github.com/yourusername/threat-detection-app.git
 cd threat-detection-app
 ```
+### 2. Set Up Environment Variables
+
+Create a .env file in the project root directory and add any necessary environment variables. For example:
+
+```bash
+NEO4J_AUTH=neo4j/password
+```
+### 3. Build and Run Docker Containers
+
+Use Docker Compose to build and start the back-end services:
+
+```bash
+docker-compose up -d --build
+```
+This will start the following services:
+
+- Neo4j Database: Accessible at bolt://localhost:7687 and http://localhost:7474.
+- Flask API: Accessible at http://localhost:5001.
+
+### 4. Install Front-End Dependencies
+
+Navigate to the frontend directory and install dependencies:
+
+```bash
+cd frontend
+npm install
+```
+### 5. Start the React Application
+
+Start the development server:
+
+```bash
+npm start
+```
+This will run the application at http://localhost:3000.
+
+## Usage
+
+### Access the Application
+
+Open your web browser and navigate to http://localhost:3000.
+
+### Explore the Graph
+
+- Zoom and Pan: Use your mouse or trackpad to zoom in/out and pan around the graph.
+- Click on Nodes: Click on any node to view detailed information in the sidebar.
+- Drag Nodes: Click and drag nodes to rearrange them for better visibility.
+
+### Search Nodes
+
+- Enter a search term in the search bar at the top.
+- Click Search to highlight matching nodes.
+- Click Reset to return to the full graph view.
+
+### Create New Threat Scenarios
+
+- Scroll down to the Create New Threat Scenario form.
+- Enter the name and description of the new threat scenario.
+- Click Create Threat Scenario to add it to the graph.
+
+## Project Structure
+
+```
+threat-detection-app/
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── import_stix.py
+│   ├── Dockerfile
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Graph.js
+│   │   │   ├── NodeDetails.js
+│   │   │   ├── SearchBar.js
+│   │   │   └── NewThreatForm.js
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   └── styles.css
+│   ├── package.json
+│   └── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+
+
+
