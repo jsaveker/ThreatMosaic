@@ -245,10 +245,89 @@ Response:
   "description": "Description of the new threat scenario"
 }
 ```
-Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
-	1.	Fork the Repository
-	2.	Create a Feature Branch
+- Fork the Repository
+- Create a Feature Branch
 
+```bash
+git checkout -b feature/your-feature-name
+```
+
+- Commit your Changes
+
+  ```bash
+  git commit -m "Add your message here"
+  ```
+  
+- Push to Your Fork
+
+```bash
+git push origin feature/your-feature-name
+```
+
+- Create a Pull Request (PR)
+
+## Acknowledgments
+
+- React: https://reactjs.org/
+- D3.js: https://d3js.org/
+- Flask: https://flask.palletsprojects.com/
+- Neo4j: https://neo4j.com/
+
+## Additional Documentation
+
+### Setting Up the Neo4j Database
+
+The application uses a Neo4j database to store and manage graph data.
+
+1. Accessing the Neo4j Browser
+
+- Open your web browser and navigate to http://localhost:7474.
+- Log in with the credentials specified in your .env file (default username is neo4j, and the password is password).
+
+2. Importing Data
+
+If you need to import initial data into the database:
+
+- Place your STIX data file (e.g., enterprise-attack.json) in the backend directory.
+- Run the import script:
+
+```bash
+docker-compose exec backend python import_stix.py
+```
+API Development Notes
+
+	•	CORS Configuration: The Flask API has CORS enabled to allow cross-origin requests from the React application.
+	•	Error Handling: API endpoints include basic error handling and return appropriate HTTP status codes.
+
+Deployment
+
+For production deployment, consider the following:
+
+	•	Use a Production Web Server: Deploy the Flask API using a production server like Gunicorn or uWSGI.
+	•	Secure Communication: Implement HTTPS using SSL certificates.
+	•	Environment Variables: Use secure methods to manage environment variables and secrets.
+	•	Scaling: Configure Docker Compose or Kubernetes for scalability.
+
+Frequently Asked Questions
+
+Q: I’m getting a CORS error when trying to access the API. How do I fix this?
+
+A: Ensure that CORS is enabled in your Flask application by including CORS(app) after initializing your Flask app. Also, check that the proxy is correctly set up in your React application’s package.json.
+
+Q: How do I add relationships between nodes?
+
+A: Currently, the application allows creating new threat scenarios. To add relationships, you can extend the API and front-end forms to include functionality for connecting nodes.
+
+Q: Can I import custom data into the graph?
+
+A: Yes, you can modify the import_stix.py script to import custom STIX data or write new scripts to handle different data formats.
+
+Support
+
+If you encounter any issues or have questions, please open an issue on GitHub or reach out via email.
+
+Thank you for using the Threat Detection Graph Application!
