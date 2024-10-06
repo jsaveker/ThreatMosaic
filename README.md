@@ -1,6 +1,6 @@
 # Threat Mosaic Application
 
-Welcome to the **Threat Detection Graph Application** repository! This application is a powerful tool for visualizing and managing threat scenarios, techniques, and mitigations using an interactive graph interface. Built with **React**, **D3.js**, **Flask**, and **Neo4j**, it allows users to search, explore, and create new threat scenarios directly from the web interface.
+Welcome to the **Threat Mosaic Application** repository! This application is a tool for visualizing and managing threat scenarios, techniques, and mitigations using an interactive graph interface. Built with **React**, **D3.js**, **Flask**, and **Neo4j**, it allows users to search, explore, and create new threat scenarios directly from the web interface.
 
 ---
 
