@@ -298,21 +298,21 @@ If you need to import initial data into the database:
 ```bash
 docker-compose exec backend python import_stix.py
 ```
-API Development Notes
+## API Development Notes
 
-	•	CORS Configuration: The Flask API has CORS enabled to allow cross-origin requests from the React application.
-	•	Error Handling: API endpoints include basic error handling and return appropriate HTTP status codes.
+- CORS Configuration: The Flask API has CORS enabled to allow cross-origin requests from the React application.
+- Error Handling: API endpoints include basic error handling and return appropriate HTTP status codes.
 
-Deployment
+## Deployment
 
 For production deployment, consider the following:
 
-	•	Use a Production Web Server: Deploy the Flask API using a production server like Gunicorn or uWSGI.
-	•	Secure Communication: Implement HTTPS using SSL certificates.
-	•	Environment Variables: Use secure methods to manage environment variables and secrets.
-	•	Scaling: Configure Docker Compose or Kubernetes for scalability.
+- Use a Production Web Server: Deploy the Flask API using a production server like Gunicorn or uWSGI.
+- Secure Communication: Implement HTTPS using SSL certificates.
+- Environment Variables: Use secure methods to manage environment variables and secrets.
+- Scaling: Configure Docker Compose or Kubernetes for scalability.
 
-Frequently Asked Questions
+## Frequently Asked Questions
 
 Q: I’m getting a CORS error when trying to access the API. How do I fix this?
 
@@ -326,8 +326,8 @@ Q: Can I import custom data into the graph?
 
 A: Yes, you can modify the import_stix.py script to import custom STIX data or write new scripts to handle different data formats.
 
-Support
+## Support
 
-If you encounter any issues or have questions, please open an issue on GitHub or reach out via email.
+If you encounter any issues or have questions, please open an issue on GitHub.
 
-Thank you for using the Threat Detection Graph Application!
+Thank you for using the Threat Mosaic Application!
