@@ -172,6 +172,83 @@ threat-detection-app/
 └── README.md
 ```
 
+## API Documentation
 
+### Base URL
 
+All API endpoints are accessed via http://localhost:5001/api/.
+
+### Endpoints
+
+1. Get Threat Scenarios
+
+	•	Endpoint: GET /api/threat_scenarios
+	•	Description: Retrieves all threat scenarios with associated techniques.
+	•	Response:
+
+```json
+[
+  {
+    "id": "threat1",
+    "name": "Threat Scenario 1",
+    "description": "Description of threat scenario 1",
+    "techniques": [
+      {
+        "id": "technique1",
+        "name": "Technique 1",
+        "description": "Description of technique 1",
+        "external_id": "T1001"
+      }
+    ]
+  }
+  // More threat scenarios...
+]
+```
+
+2. Search Nodes
+
+	•	Endpoint: GET /api/search
+	•	Query Parameters:
+	•	query: The search term.
+	•	Description: Searches for nodes whose name contains the query string.
+	•	Response:
+
+```json
+[
+  {
+    "id": "node1",
+    "name": "Node Name",
+    "labels": ["Technique"]
+  }
+  // More nodes...
+]
+```
+
+3. Create Threat Scenario
+
+	•	Endpoint: POST /api/threat_scenarios
+	•	Description: Creates a new threat scenario.
+	•	Request Body:
+
+```json
+{
+  "name": "New Threat Scenario",
+  "description": "Description of the new threat scenario"
+}
+```
+Response:
+
+```json
+{
+  "id": "generated-id",
+  "name": "New Threat Scenario",
+  "description": "Description of the new threat scenario"
+}
+```
+Contributing
+
+Contributions are welcome! Please follow these steps:
+
+	1.	Fork the Repository
+	2.	Create a Feature Branch
 
