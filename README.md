@@ -149,7 +149,7 @@ Open your web browser and navigate to http://localhost:3000.
 ## Project Structure
 
 ```
-threat-detection-app/
+threat-mosaic-app/
 ├── backend/
 │   ├── app.py
 │   ├── requirements.txt
