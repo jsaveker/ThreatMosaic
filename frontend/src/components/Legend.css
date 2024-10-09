@@ -1,0 +1,50 @@
+/* frontend/src/components/Legend.css */
+
+.legend {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .legend-section {
+    margin-bottom: 10px;
+  }
+  
+  .legend-section h4 {
+    margin-bottom: 5px;
+  }
+  
+  .legend-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .legend-section li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .legend-color {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .legend-line {
+    width: 15px;
+    height: 2px;
+    display: inline-block;
+    margin-right: 8px;
+    border-bottom: 2px solid #999; /* Default style */
+  }
