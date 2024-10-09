@@ -53,7 +53,7 @@ Welcome to the **Threat Mosaic Application** repository! This application is a t
 
 ## Demo
 
-![Threat Detection Graph Screenshot](Threat_Mosaic.png)
+![Threat Detection Graph Screenshot](https://github.com/jsaveker/ThreatMosaic/blob/fd5d06a8c228a926b32f679f2dcbc19af52b4552/Threat_Mosaic.png)
 
 ---
 
