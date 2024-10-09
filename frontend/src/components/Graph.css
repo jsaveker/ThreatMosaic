@@ -1,0 +1,43 @@
+/* frontend/src/components/Graph.css */
+
+/* Tooltip styles */
+.tooltip {
+    position: absolute;
+    text-align: left;
+    width: auto;
+    height: auto;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+  }
+  
+  /* Link styles */
+  .link {
+    stroke: #999;
+    stroke-opacity: 0.6;
+    stroke-width: 1.5px;
+  }
+  
+  /* Link label styles */
+  .link-label {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    fill: #555;
+    pointer-events: none;
+  }
+  
+  /* Node styles */
+  .nodes circle {
+    stroke: #333;
+    stroke-width: 1.5px;
+  }
+  
+  /* Label styles */
+  .labels text {
+    font-size: 10px;
+    fill: #555;
+  }

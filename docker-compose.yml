@@ -16,27 +16,27 @@ services:
     networks:
       - app-network
 
-  api:
-    build: ./api
-    container_name: api
+  backend:
+    build: ./backend
+    container_name: backend
     restart: unless-stopped
     depends_on:
       - neo4j
     environment:
       - PYTHONUNBUFFERED=1
     ports:
-      - "5001:5000"
+      - "5001:5001"
     networks:
       - app-network
 
-  web:
-    build: ./web
-    container_name: web
+  frontend:
+    build: ./frontend
+    container_name: frontend
     restart: unless-stopped
     depends_on:
-      - api
+      - backend
     ports:
-      - "8000:80"
+      - "3000:3000"
     networks:
       - app-network
 

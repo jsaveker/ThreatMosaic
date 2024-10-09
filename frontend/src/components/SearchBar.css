@@ -1,0 +1,24 @@
+/* frontend/src/components/SearchBar.css */
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .search-bar select {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  .search-bar button {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
