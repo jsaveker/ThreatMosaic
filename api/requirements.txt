@@ -1,4 +1,0 @@
-Flask
-flask-cors
-py2neo
-stix2
