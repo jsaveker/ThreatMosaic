@@ -7,6 +7,11 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+# Copy the requirements file into the container at /app
+COPY requirements.txt .
+
+RUN npm install cytoscape cytoscape-context-menus cytoscape-cose-bilkent cytoscape-popper tippy.js
+RUN npm install tippy.js@6
 # Install app dependencies
 RUN npm install
 

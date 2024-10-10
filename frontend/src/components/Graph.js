@@ -1,248 +1,162 @@
 // frontend/src/components/Graph.js
 
 import React, { useRef, useEffect } from 'react';
-import * as d3 from 'd3';
-import './Graph.css'; // Ensure this CSS file exists for additional styles
+import Cytoscape from 'cytoscape';
+import coseBilkent from 'cytoscape-cose-bilkent';
+import popper from 'cytoscape-popper';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+import './Graph.css';
 
-function Graph({ data, onNodeClick, loading, fetchRelatedNodes }) {
-  const svgRef = useRef();
+Cytoscape.use(coseBilkent);
+Cytoscape.use(popper);
+
+function Graph({ data, loading, fetchRelatedNodes }) {
+  const cyRef = useRef(null);
+  const cyInstanceRef = useRef(null);
+
+  const getColorForGroup = (group) => {
+    const colorMap = {
+      ThreatScenario: '#ff7f0e',
+      Technique: '#1f77b4',
+      SubTechnique: '#aec7e8',
+      Campaign: '#98df8a',
+      Tool: '#ffbb78',
+      Tactic: '#c5b0d5',
+      DataSource: '#c49c94',
+      DataComponent: '#f7b6d2',
+      Mitigation: '#2ca02c',
+    };
+    return colorMap[group] || '#666';
+  };
 
   useEffect(() => {
-    if (loading) return;
-  
-    // Select the SVG element
-    const svg = d3.select(svgRef.current);
-    
-    // Clear previous content
-    svg.selectAll('*').remove(); 
-  
-    // Set dimensions based on container's size
-    svg
-      .attr('width', '100%')
-      .attr('height', '100%');
-  
-    const width = svgRef.current.clientWidth;
-    const height = svgRef.current.clientHeight;
+    if (loading || !cyRef.current || !data || !Array.isArray(data.nodes) || !Array.isArray(data.links)) return;
 
-    // Define zoom behavior
-    const zoom = d3.zoom()
-      .scaleExtent([0.1, 10])
-      .on('zoom', (event) => {
-        container.attr('transform', event.transform);
+    if (!cyInstanceRef.current) {
+      cyInstanceRef.current = Cytoscape({
+        container: cyRef.current,
+        elements: [
+          ...data.nodes.map((node) => ({
+            data: { id: node.id, label: node.name, group: node.group },
+          })),
+          ...data.links.map((link) => ({
+            data: { source: link.source, target: link.target, label: link.relationship },
+          })),
+        ],
+        style: [
+          {
+            selector: 'node',
+            style: {
+              label: 'data(label)',
+              'background-color': (ele) => getColorForGroup(ele.data('group')),
+              width: '40px',
+              height: '40px',
+              'text-valign': 'center',
+              'text-halign': 'center',
+              'font-size': '10px',
+              color: '#333',
+            },
+          },
+          {
+            selector: 'edge',
+            style: {
+              label: 'data(label)',
+              width: 1.5,
+              'line-color': '#999',
+              'target-arrow-color': '#666',
+              'target-arrow-shape': 'triangle',
+              'curve-style': 'bezier',
+              'font-size': '8px',
+              color: '#333',
+              'text-background-color': '#ffffff',
+              'text-background-opacity': 1,
+            },
+          },
+        ],
+        layout: {
+          name: 'cose-bilkent',
+          animate: 'end',
+          padding: 50,
+          nodeRepulsion: 10000,
+          idealEdgeLength: 100,
+          edgeElasticity: 0.5,
+        },
+        maxZoom: 2,
+        minZoom: 0.5,
+        userZoomingEnabled: true,
+        userPanningEnabled: true,
       });
 
-    // Apply zoom behavior to the SVG
-    svg.call(zoom);
+      // Tooltip creation with tippy.js on mouse hover
+      cyInstanceRef.current.nodes().forEach((node) => {
+        const tooltip = tippy(document.createElement('div'), {
+          content: `${node.data('group')}: ${node.data('label')}`,
+          trigger: 'mouseenter',
+          allowHTML: true,
+          arrow: true,
+          theme: 'light',
+        });
+        node.on('mouseover', () => tooltip.show());
+        node.on('mouseout', () => tooltip.hide());
+      });
 
-    // Wrap all graph elements in a group for zooming
-    const container = svg.append('g');
+      // Expanding nodes on double-click and re-running layout for readability
+      cyInstanceRef.current.on('dblclick', 'node', async (event) => {
+        const node = event.target;
+        const nodeId = node.data('id');
 
-    // Define arrowheads for directed relationships
-    container.append('defs').selectAll('marker')
-      .data(['arrow']) // Differentiate if multiple types needed
-      .enter().append('marker')
-      .attr('id', 'arrow')
-      .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 15)
-      .attr('refY', 0)
-      .attr('markerWidth', 6)
-      .attr('markerHeight', 6)
-      .attr('orient', 'auto')
-      .append('path')
-      .attr('d', 'M0,-5L10,0L0,5')
-      .attr('fill', '#999');
+        if (fetchRelatedNodes) {
+          const relatedData = await fetchRelatedNodes(nodeId);
 
-    // Draw links
-    const link = container.append('g')
-      .attr('class', 'links')
-      .selectAll('line')
-      .data(data.links)
-      .enter()
-      .append('line')
-      .attr('class', 'link')
-      .style('stroke', d => d.color || '#999') // Optionally use color from data
-      .style('stroke-opacity', 0.6)
-      .style('stroke-width', '1.5px')
-      .attr('marker-end', 'url(#arrow)'); // Add arrowhead
+          const newNodes = relatedData?.nodes || [];  // Safeguard: Default to empty array if undefined
+          const newLinks = relatedData?.links || [];  // Safeguard: Default to empty array if undefined
 
-    // Draw link labels
-    const linkLabels = container.append('g')
-      .attr('class', 'link-labels')
-      .selectAll('text')
-      .data(data.links)
-      .enter()
-      .append('text')
-      .attr('class', 'link-label')
-      .text(d => d.relationship)
-      .style('font-size', '10px')
-      .style('fill', '#555')
-      .style('pointer-events', 'none'); // Make labels non-interactive
+          cyInstanceRef.current.batch(() => {
+            const expandedElements = [
+              ...newNodes.map((n) => ({
+                data: { id: n.id, label: n.name, group: n.group },
+              })),
+              ...newLinks.map((link) => ({
+                data: { source: link.source, target: link.target, label: link.relationship },
+              })),
+            ];
 
-    // Initialize D3 force simulation
-    const simulation = d3.forceSimulation(data.nodes)
-      .force('link', d3.forceLink(data.links).id((d) => d.id).distance(200))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius(20));
+            cyInstanceRef.current.add(expandedElements);
 
-    simulation.on('tick', () => {
-      link
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y);
+            // Set colors for newly expanded nodes
+            newNodes.forEach((n) => {
+              const expandedNode = cyInstanceRef.current.getElementById(n.id);
+              expandedNode.style('background-color', getColorForGroup(n.group));
+            });
+          });
 
-      linkLabels
-        .attr('x', (d) => (d.source.x + d.target.x) / 2)
-        .attr('y', (d) => (d.source.y + d.target.y) / 2);
-
-      node
-        .attr('cx', (d) => d.x)
-        .attr('cy', (d) => d.y);
-
-      label
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y);
-    });
-
-    // Draw nodes
-    const node = container.append('g')
-      .attr('class', 'nodes')
-      .selectAll('circle')
-      .data(data.nodes)
-      .enter()
-      .append('circle')
-      .attr('r', 10)
-      .attr('fill', (d) => {
-        switch (d.group) {
-          case 'ThreatScenario':
-            return '#ff7f0e';
-          case 'Technique':
-            return '#1f77b4';
-          case 'SubTechnique':
-            return '#aec7e8';
-          case 'Campaign':
-            return '#98df8a';
-          case 'Tool':
-            return '#ffbb78';
-          case 'Tactic':
-            return '#c5b0d5';
-          case 'DataSource':
-            return '#c49c94';
-          case 'DataComponent':
-            return '#f7b6d2';
-          case 'Mitigation':
-            return '#2ca02c';
-          default:
-            return '#ccc';
+          // Re-run the layout to adjust spacing and prevent overlap
+          cyInstanceRef.current.layout({
+            name: 'cose-bilkent',
+            animate: 'end',
+            padding: 50,
+            nodeRepulsion: 10000,
+            idealEdgeLength: 120,
+            edgeElasticity: 0.5,
+          }).run();
         }
-      })
-      .style('stroke', '#333')
-      .style('stroke-width', '1.5px')
-      .call(drag()) // Attach drag behavior
-      .on('click', (event, d) => {
-        console.log('Graph.js - Node clicked:', d);
-        onNodeClick(d);
-        fetchRelatedNodes(d);
-      })
-      .on('mouseover', (event, d) => {
-        tooltip.transition()
-          .duration(200)
-          .style('opacity', .9);
-        tooltip.html(`<strong>${d.group}</strong>: ${d.name}`)
-          .style('left', (event.pageX + 10) + 'px')
-          .style('top', (event.pageY - 28) + 'px');
-      })
-      .on('mouseout', () => {
-        tooltip.transition()
-          .duration(500)
-          .style('opacity', 0);
       });
-
-    // Add labels
-    const label = container.append('g')
-      .attr('class', 'labels')
-      .selectAll('text')
-      .data(data.nodes)
-      .enter()
-      .append('text')
-      .attr('dy', -15)
-      .attr('text-anchor', 'middle')
-      .text((d) => d.name)
-      .style('font-size', '10px')
-      .style('fill', '#555');
-
-    // Define tooltip
-    const tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
-      .style('position', 'absolute')
-      .style('text-align', 'left')
-      .style('width', 'auto')
-      .style('height', 'auto')
-      .style('padding', '8px')
-      .style('font', '12px sans-serif')
-      .style('background', 'lightsteelblue')
-      .style('border', '0px')
-      .style('border-radius', '8px')
-      .style('pointer-events', 'none')
-      .style('opacity', 0);
-
-    simulation.on('tick', () => {
-      link
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y);
-
-      linkLabels
-        .attr('x', (d) => (d.source.x + d.target.x) / 2)
-        .attr('y', (d) => (d.source.y + d.target.y) / 2);
-
-      node
-        .attr('cx', (d) => d.x)
-        .attr('cy', (d) => d.y);
-
-      label
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y);
-    });
-
-    // Drag functionality
-    function drag() {
-      function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-      }
-
-      function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-      }
-
-      return d3.drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended);
     }
 
-    // Clean up tooltip and stop simulation on component unmount
     return () => {
-      tooltip.remove();
-      simulation.stop();
+      if (cyInstanceRef.current) {
+        cyInstanceRef.current.removeListener('dblclick', 'node');
+        cyInstanceRef.current.destroy();
+        cyInstanceRef.current = null;
+      }
     };
-  }, [data, loading, onNodeClick, fetchRelatedNodes]);
+  }, [data, loading, fetchRelatedNodes]);
 
   return (
-    <div className="graph-container">
+    <div className="graph-container" style={{ backgroundColor: 'transparent' }}>
       {loading ? <p>Loading...</p> : null}
-      <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
+      <div ref={cyRef} style={{ width: '100%', height: '100%' }} />
     </div>
   );
 }

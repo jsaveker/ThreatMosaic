@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './NewThreatForm.css'; // Create this CSS file for styling
+import './NewThreatForm.css';
 
 function NewThreatForm({ onCreate }) {
   const [name, setName] = useState('');
@@ -15,11 +15,11 @@ function NewThreatForm({ onCreate }) {
   useEffect(() => {
     let isMounted = true; // Flag to track if component is mounted
 
-    // Fetch all available nodes to associate with the new threat scenario
+    // Fetch only Technique nodes to associate with the new threat scenario
     const fetchAvailableNodes = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/search`, {
-          params: { query: '', type: ['Technique', 'Tool', 'Tactic', 'DataSource', 'DataComponent'] },
+          params: { query: '', type: 'Technique' },
         });
         if (isMounted) {
           setAvailableNodes(response.data);
@@ -44,8 +44,6 @@ function NewThreatForm({ onCreate }) {
       return;
     }
 
-    let isMounted = true; // Flag to track if component is mounted
-
     try {
       // Create the new threat scenario
       const response = await axios.post(`${API_BASE_URL}/threat_scenarios`, { name, description });
@@ -63,23 +61,16 @@ function NewThreatForm({ onCreate }) {
         await Promise.all(relationshipPromises);
       }
 
-      if (isMounted) {
-        // Notify the parent component
-        onCreate({ ...newThreat, relatedNodes });
+      // Notify the parent component and reset form fields
+      onCreate({ ...newThreat, relatedNodes });
+      setName('');
+      setDescription('');
+      setRelatedNodes([]);
 
-        // Reset form fields
-        setName('');
-        setDescription('');
-        setRelatedNodes([]);
-      }
     } catch (error) {
       console.error('Error creating threat scenario:', error);
-      if (isMounted) {
-        alert('Failed to create threat scenario.');
-      }
+      alert('Failed to create threat scenario.');
     }
-
-    // No need for cleanup here since it's a one-time operation
   };
 
   const handleRelatedNodesChange = (e) => {
@@ -116,7 +107,7 @@ function NewThreatForm({ onCreate }) {
           ></textarea>
         </div>
         <div>
-          <label htmlFor="related-nodes">Associate with:</label>
+          <label htmlFor="related-nodes">Associate with Techniques:</label>
           <select
             id="related-nodes"
             multiple

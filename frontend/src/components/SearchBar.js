@@ -1,14 +1,24 @@
 // frontend/src/components/SearchBar.js
 
 import React, { useState } from 'react';
-import './SearchBar.css'; // Create this CSS file for styling
+import './SearchBar.css';
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch, onToggleVisibility }) {
   const [query, setQuery] = useState('');
   const [types, setTypes] = useState([]);
+  const [visibility, setVisibility] = useState({
+    ThreatScenario: true,
+    Technique: true,
+    SubTechnique: true,
+    Campaign: true,
+    Tool: true,
+    Tactic: true,
+    DataSource: true,
+    DataComponent: true,
+    Mitigation: true,
+  });
 
   const nodeTypes = [
-    { label: 'All Types', value: '' },
     { label: 'Threat Scenario', value: 'ThreatScenario' },
     { label: 'Technique', value: 'Technique' },
     { label: 'Sub Technique', value: 'SubTechnique' },
@@ -18,7 +28,6 @@ function SearchBar({ onSearch }) {
     { label: 'Data Source', value: 'DataSource' },
     { label: 'Data Component', value: 'DataComponent' },
     { label: 'Mitigation', value: 'Mitigation' },
-    // Add more node types as needed
   ];
 
   const handleSearch = () => {
@@ -42,6 +51,12 @@ function SearchBar({ onSearch }) {
     setTypes(selectedTypes);
   };
 
+  const handleVisibilityChange = (type) => {
+    const newVisibility = { ...visibility, [type]: !visibility[type] };
+    setVisibility(newVisibility);
+    onToggleVisibility(newVisibility);
+  };
+
   return (
     <div className="search-bar">
       <input
@@ -59,6 +74,20 @@ function SearchBar({ onSearch }) {
       </select>
       <button onClick={handleSearch}>Search</button>
       <button onClick={handleReset}>Reset</button>
+
+      <div className="visibility-controls">
+        <h4>Toggle Node Types</h4>
+        {nodeTypes.map((type) => (
+          <label key={type.value}>
+            <input
+              type="checkbox"
+              checked={visibility[type.value]}
+              onChange={() => handleVisibilityChange(type.value)}
+            />
+            {type.label}
+          </label>
+        ))}
+      </div>
     </div>
   );
 }

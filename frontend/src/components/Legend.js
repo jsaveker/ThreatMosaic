@@ -14,6 +14,7 @@ function Legend() {
     { color: '#c49c94', label: 'Data Source' },
     { color: '#f7b6d2', label: 'Data Component' },
     { color: '#2ca02c', label: 'Mitigation' },
+    { color: '#2ca02c', label: 'Detection' },
     // Add more node types as needed
   ];
 
