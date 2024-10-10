@@ -13,14 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code into the container at /app
 COPY . .
 
-# Expose port 5001 for the Flask app
-EXPOSE 5001
+# Expose port 8000 for the Django app
+EXPOSE 8000
 
-# Define environment variable for Flask
-ENV FLASK_APP=app.py
-
-# Run app.py when the container launches
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5001"]
+# Run Django development server when the container launches
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # Copy the Mitre Attack Data
 COPY enterprise-attack.json .

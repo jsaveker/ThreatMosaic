@@ -25,7 +25,10 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     ports:
-      - "5001:5001"
+      - "5001:8000"  # Map container's port 8000 to host's port 5001
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     networks:
       - app-network
 
